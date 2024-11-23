@@ -4,7 +4,7 @@ load_in_4bit = True # Use 4bit quantization to reduce memory usage. Can be False
 
 from unsloth import FastLanguageModel
 model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name = "/content/drive/MyDrive/chatbot_model/lora_model", 
+    model_name = "lora_model", 
     max_seq_length = max_seq_length,
     dtype = dtype,
     load_in_4bit = True,
