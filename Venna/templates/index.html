@@ -1,0 +1,187 @@
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8", lang="en">
+    <meta name="viewport", content="width=device-width, initial-scale=1.0">
+    <title>Venna AI</title>
+    {% load static%}
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon"/>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="header-container">
+        <header class="header">
+            <div class="logo">
+                <img src="{% static 'img/logo.png' %}" alt="logo" height="80px">
+            </div>
+            <div class="title">Venna AI</div>
+            <div class="info-button-container">
+                <a href="https://wa.me/6287864247438" class="info-button">
+                    <img src="{% static 'img/support.png' %}" alt="support" width="30px">
+                </a>
+            </div>
+
+        </header>
+    </div>
+    <div class="chat-container-parent">
+        <div class="chat-container-mask"></div>
+        <div class="chat-container">
+            <!-- Scrollable response container -->
+            <div class="response-container" id="chat-response">
+                <div class="message-container bot">
+                    <img src="{% static 'img/bot-avatar.png' %}" alt="Bot Avatar" class="avatar">
+                    <div class="message-bubble">
+                        <p>Hloo, namamu siapa?</p>
+                        <span class="timestamp"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Fixed input container -->
+        <div class="textbox">
+            <textarea name="message-textbox" id="message-textbox" placeholder="Type here..."></textarea>
+            <button class="send-button"><img src="{% static 'img/send.png'%}" alt=""></button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const images = document.querySelectorAll("img");
+            let imagesLoaded = 0;
+        
+            images.forEach((img) => {
+                if (img.complete) {
+                    imagesLoaded++;
+                } else {
+                    img.addEventListener("load", () => {
+                        imagesLoaded++;
+                        if (imagesLoaded === images.length) {
+                            hideLoadingOverlay();
+                        }
+                    });
+                    img.addEventListener("error", () => {
+                        imagesLoaded++; // Increment even if there was an error
+                        if (imagesLoaded === images.length) {
+                            hideLoadingOverlay();
+                        }
+                    });
+                }
+            });
+        
+            if (imagesLoaded === images.length) {
+                hideLoadingOverlay();
+            }
+        });
+        
+        function hideLoadingOverlay() {
+            const overlay = document.getElementById("loading-overlay");
+            if (overlay) {
+                overlay.style.display = "none";
+            }
+        }
+        
+        $(document).ready(function(){
+            $('.send-button').on('click', sendMessage);
+        
+            $('#message-textbox').on('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); 
+                    sendMessage();
+                }
+            });
+        
+            function sendMessage() {
+                const message = $('#message-textbox').val().trim();
+                if (message === '') return;
+        
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const timestamp = `${hours}:${minutes}`;
+        
+                $('#chat-response').append(`
+                    <div class="message-container user">
+                        <div class="message-bubble">
+                            <p>${message}</p>
+                            <span class="timestamp">${timestamp}</span>
+                        </div>
+                        <img src="{% static 'img/user-avatar.png' %}" alt="User Avatar" class="avatar">
+                    </div>
+                `);
+                
+                $('#message-textbox').val('');
+        
+                const loadingMessage = `
+                    <div class="message-container bot loading">
+                        <img src="{% static 'img/bot-avatar.png' %}" alt="Bot Avatar" class="avatar">
+                        <div class="message-bubble">
+                            <img src="{% static 'img/loading.gif' %}" alt="Loading..." class="loading-gif"/>
+                            <span class="timestamp">${timestamp}</span>
+                        </div>
+                    </div>
+                `;
+                $('#chat-response').append(loadingMessage);
+                $('#chat-response').animate({ scrollTop: $('#chat-response')[0].scrollHeight }, 500);
+        
+                $.ajax({
+                    type: 'POST',
+                    url: '/chat/',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ message: message }),
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                    },
+                    success: function(response){
+                        $('#chat-response .loading').last().remove();
+                        
+                        $('#chat-response').append(`
+                            <div class="message-container bot">
+                                <img src="{% static 'img/bot-avatar.png' %}" alt="Bot Avatar" class="avatar">
+                                <div class="message-bubble">
+                                    <p>${response.response}</p>
+                                    <span class="timestamp">${timestamp}</span>
+                                </div>
+                            </div>
+                        `);
+                        $('#chat-response').animate({ scrollTop: $('#chat-response')[0].scrollHeight }, 500);
+                    },
+                    error: function(xhr, status, error){
+                        console.error('Error: ', error);
+                        $('#chat-response .loading').last().remove();
+                        $('#chat-response').append(`
+                            <div class="message-container bot error">
+                                <div class="message-bubble">
+                                    <p>Sorry, there was an error processing your message. Please try again later.</p>
+                                </div>
+                            </div>
+                        `);
+                        $('#chat-response').animate({ scrollTop: $('#chat-response')[0].scrollHeight }, 500);
+                    }
+                });
+            }
+        
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        });
+        </script>
+        
+</body>

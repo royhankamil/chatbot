@@ -1,0 +1,378 @@
+/* General body styles */
+html, body {
+    height: 100%; /* Ensure full height */
+    margin: 0; /* Remove default margins */
+    overflow: hidden; /* Prevent scrolling */
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    background-color: #E1E1E1;
+    animation: fadeIn 0.5s ease-in-out; /* Fade in animation for the entire page */
+}
+
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Ensure it is on top of other elements */
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    border-top: 5px solid #333;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+
+/* Keyframe for fade-in effect */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+* {
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+.info-button-container {
+    position: relative;
+    display: inline-block;
+}
+
+.info-button {
+    background-image: linear-gradient(#EDC7E5, #DDB7FF);
+    width: 70px;
+    height: 70px;
+    border: none;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease; /* Smooth hover effect */
+}
+
+.info-button:hover {
+    transform: scale(1.1); /* Scale up on hover */
+}
+
+.header {
+    display: grid;
+    align-items: center;
+    grid-template-columns: auto 1fr auto;
+    margin: 30px 40px 15px 40px;
+}
+
+.title {
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 27px;
+    animation: slideIn 0.5s ease; /* Slide in effect for the title */
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.chat-container-parent {
+    display: flex;
+    flex-direction: column;
+    height: 95vh;
+    position: relative;
+    width: 97%; /* Adjusts to 95% of the viewport or parent width */
+    margin-right: 10px;
+    margin-left: 2.8%;
+    margin-bottom: 10px;
+    margin-top: 2.5%;
+}
+
+.chat-container-mask {
+    position: absolute;
+    z-index: 1;
+    height: 85%; /* Set height relative to parent */
+    width: 98%; /* Set width relative to parent */
+    border-radius: 35px;
+    background-image: url("../img/bg.5ca052f44e55.png");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    padding: 10px; /* Padding for internal content */
+    filter: blur(10px);
+    opacity: 0; /* Start hidden for fade-in effect */
+    animation: fadeIn 0.5s forwards; /* Fade in on load */
+}
+
+.chat-container {
+    position: absolute;
+    z-index: 2;
+    height: 85%; /* Set height relative to parent */
+    width: 98%; /* Set width relative to parent */
+    border-radius: 35px;
+    background-image: url("../img/bg.5ca052f44e55.png");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    padding: 10px; /* Padding for internal content */
+    opacity: 0; /* Start hidden for fade-in effect */
+    animation: fadeIn 0.7s forwards; /* Fade in on load */
+    animation-delay: 0.2s; /* Delay to allow mask to fade in first */
+}
+
+.textbox {
+    position: fixed;
+    left: 50%;
+    bottom: -90px;
+    transform: translateX(-50%);
+    width: 90%; /* Responsive width */
+    max-width: 1000px; /* Maximum width for larger screens */
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 25px;
+    padding: 10px;
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease; /* Smooth appearance */
+    animation: slideInTextbox 0.5s forwards; /* Slide in effect */
+    animation-delay: 0.4s; /* Delay for textbox animation */
+}
+@keyframes slideInTextbox {
+    from {
+        bottom: 0px; /* Start slightly above the final position */
+        opacity: 0; /* Start invisible */
+    }
+    to {
+        bottom: 75px; /* End at the normal position */
+        opacity: 1; /* End visible */
+    }
+}
+
+* {
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+.textbox textarea {
+    flex-grow: 1;
+    min-width: 0; /* Ensures it doesn’t overflow */
+    height: 50px;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 15px;
+    font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    resize: none;
+    background-color: transparent;
+    outline: none;
+    transition: background-color 0.3s ease; /* Smooth background color change */
+}
+
+.textbox textarea:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.7); /* Change background on focus */
+}
+
+.response-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    margin-bottom: 20px; /* To prevent messages from overlapping with textbox */
+}
+
+.send-button {
+    border: none;
+    width: 50px;
+    height: 50px;
+    margin-left: 20px;
+    border-radius: 20px;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth background and transform effect */
+}
+
+.send-button:hover {
+    background-color: rgba(0, 128, 255, 0.2); /* Change background color on hover */
+    transform: scale(1.1); /* Scale up on hover */
+}
+
+/* Message container styling for both user and bot messages */
+.message-container {
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    opacity: 0; /* Start hidden for fade-in effect */
+    animation: fadeInMessage 0.5s forwards; /* Fade in animation for messages */
+}
+
+
+
+.message-container:nth-child(odd) {
+    animation-delay: 0.1s; /* Staggered delay for odd messages */
+}
+
+.message-container:nth-child(even) {
+    animation-delay: 0.2s; /* Staggered delay for even messages */
+}
+
+/* Different alignment for bot and user messages */
+.message-container.bot {
+    justify-content: flex-start;
+    margin-left: 30px;
+}
+
+.message-container.user {
+    justify-content: flex-end;
+    margin-right: 30px;
+}
+
+/* Avatar styling */
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: relative; /* Keep avatar relative to the message container */
+    margin-right: 10px; /* Space between avatar and message bubble */
+}
+/* Message bubble styling */
+.message-bubble {
+    max-width: 70%;
+    padding: 15px 30px 15px 30px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    border-radius: 20px;
+    color: #333;
+}
+.chat-container::-webkit-scrollbar {
+    width: 12px; /* Width of the scrollbar */
+    background: #f1f1f1; /* Background of the scrollbar */
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+    border-radius: 10px; /* Rounded edges */
+    background: #888; /* Color of the scrollbar thumb */
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Darker color when hovering */
+}
+
+/* Optional: For a shadow effect on the scrollbar */
+.chat-container::-webkit-scrollbar {
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5); /* Shadow for better visibility */
+}
+.bot .message-bubble {
+    background-color: rgba(255, 255, 255, 0.7);
+    border-bottom-left-radius: 0;
+    margin-left: 20px;
+}
+
+.user .message-bubble {
+    background-color: #8cf99083;
+    border-bottom-right-radius: 0;
+    margin-right: 20px;
+}
+
+/* Timestamp styling */
+.timestamp {
+    display: block;
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+    text-align: right;
+}
+
+/* Custom scrollbar styling */
+.chat-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+    background-color: #d1aaff;
+    border-radius: 10px;
+}
+
+/* Animation for message fading */
+@keyframes fadeInMessage {
+    from {
+        opacity: 0;
+        transform: translateY(10px); /* Slight upward motion */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0); /* End position */
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .message-container.bot {
+        justify-content: flex-start;
+        margin-left: 0px;
+    }
+    
+    .message-container.user {
+        justify-content: flex-end;
+        margin-right: 0px;
+    }
+
+    .header {
+        display: grid;
+        align-items: center;
+        grid-template-columns: auto 1fr auto;
+        margin: 30px 20px 15px 20px;
+    }
+
+    .bot .message-bubble {
+        background-color: rgba(255, 255, 255, 0.7);
+        border-bottom-left-radius: 0;
+        margin-left: 5px;
+    }
+    
+    .user .message-bubble {
+        background-color: #8cf99083;
+        border-bottom-right-radius: 0;
+        margin-right: 5px;
+    }
+    .message-container {
+        display: flex;
+        align-items: flex-end;
+        margin-bottom: 20px;
+        opacity: 0; /* Start hidden for fade-in effect */
+        animation: fadeInMessage 0.5s forwards; /* Fade in animation for messages */
+    }
+    
+}
